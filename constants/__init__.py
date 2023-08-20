@@ -1,0 +1,14 @@
+## Raffle Game Related Constants
+RAFFLE_STATUS_NOT_RUNNING = 0
+RAFFLE_STATUS_RUNNING = 1
+RAFFLE_STATUS_ENDED = 2
+
+RAFFLE_GAME_INITIAL_POT = 100
+
+## Ticket Constants
+TICKET_PRICE = 5
+TICKET_N_NUMS = 5
+TICKET_VALID_NUM = tuple([i for i in range(1, 16)])
+
+## Common constants
+MAX_TICKETS_PER_USER = 5
