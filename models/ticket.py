@@ -7,8 +7,11 @@ from constants import (
 )
 
 class Ticket:
-    def __init__(self):
-        self.__ticket_nums = self.__generate_ticket_value()
+    def __init__(self, ticket_nums=None):
+        if not ticket_nums:
+            self.__ticket_nums = self.__generate_ticket_value()
+        else:
+            self.__ticket_nums = ticket_nums
 
     def __repr__(self):
         return ' '.join([str(x) for x in self.__ticket_nums])
