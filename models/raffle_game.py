@@ -3,6 +3,7 @@ from collections import defaultdict
 from constants import (
     MAX_TICKETS_PER_USER,
     RAFFLE_GAME_INITIAL_POT,
+    RAFFLE_STATUS_ENDED,
     RAFFLE_STATUS_NOT_RUNNING,
     RAFFLE_STATUS_RUNNING,
     TICKET_PRICE,
@@ -50,8 +51,9 @@ class RaffleGame:
         self.set_raffle_value(self.get_raffle_value() + n_tickets * TICKET_PRICE)
         return True, current_user_tickets
     
-    def clear_user_states(self):
+    def clear_states(self):
         self.__user_states = defaultdict(lambda: [])
+        self.__wining_ticket = None
     
     def get_user_states(self):
         return self.__user_states
@@ -79,3 +81,40 @@ class RaffleGame:
     def calculate_raffle(self):
         ## Generate a winning ticket
         self.__wining_ticket = Ticket()
+
+        user_states = self.__user_states
+
+        winning_group = defaultdict(lambda: defaultdict(lambda: 0))
+        current_raffle_value = remaining_rewards = self.__raffle_pot_value
+
+        for user, current_user_tickets in user_states.items():
+            for current_ticket in current_user_tickets:
+                n_match_with_winning_ticket =  self.__wining_ticket.compare_ticket(current_ticket)
+
+                if n_match_with_winning_ticket >= 2:
+                    winning_group[n_match_with_winning_ticket][user] += 1
+        
+        result = defaultdict(lambda: defaultdict(lambda: {}))
+
+        group_rewards_ratio = [0, 0, 0.1, 0.15, 0.25, 0.5]
+        group_rewards_value = [x * current_raffle_value for x in group_rewards_ratio]
+
+        for group in range(2, 6):
+            user_winning_per_group = winning_group[group]
+
+            if not user_winning_per_group:
+                result[group] = {}
+            else:
+                # calculate remaining_rewards for next round
+                remaining_rewards -= group_rewards_value[group]
+
+                n_share_current_group = sum(user_winning_per_group.values())
+                for user, n_ticket_winning_this_group in user_winning_per_group.items():
+                    result[group][user] = (
+                        n_ticket_winning_this_group,
+                        round((n_ticket_winning_this_group / n_share_current_group) * group_rewards_value[group], 2)
+                    )
+        
+        self.set_raffle_value(remaining_rewards)
+        self.set_status(RAFFLE_STATUS_ENDED)
+        return self.__wining_ticket, remaining_rewards, result

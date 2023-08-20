@@ -102,7 +102,7 @@ def test_same_user_can_purchase_upto_than_five_tickets_in_each_draw(sample_raffl
     is_success = is_success and current_is_success
 
     ## Simulate new draw
-    sample_raffle_game.clear_user_states()
+    sample_raffle_game.clear_states()
 
     is_success_round_2 = True
 
@@ -114,3 +114,41 @@ def test_same_user_can_purchase_upto_than_five_tickets_in_each_draw(sample_raffl
 
     assert is_success and is_success_round_2
 
+def test_raffle_pot_should_decrease_with_current_round_rewards(sample_raffle_game: RaffleGame):
+    sample_raffle_game.begin_raffle_game()
+
+    n1, n2, n3 = 2, 3, 5
+    sample_raffle_game.add_user_buy_ticket_turn('Joe', n1)
+    sample_raffle_game.add_user_buy_ticket_turn('Joe1', n2)
+    sample_raffle_game.add_user_buy_ticket_turn('Joe2', n3)
+
+    result = initial_pot_value = RAFFLE_GAME_INITIAL_POT + (n1 + n2 + n3) * TICKET_PRICE
+
+    _, remaining_pot_value, rewards = sample_raffle_game.calculate_raffle()
+
+    group_ratios = [0, 0, 0.1, 0.15, 0.25, 0.5]
+    for group in range(2, 6):
+        if rewards[group]:
+            result -= initial_pot_value * group_ratios[group]
+
+    assert result == remaining_pot_value
+
+def test_next_draw_should_have_pot_value_of_remaining_pot_value(sample_raffle_game: RaffleGame):
+    sample_raffle_game.begin_raffle_game()
+
+    n1, n2, n3 = 2, 3, 5
+    sample_raffle_game.add_user_buy_ticket_turn('Joe', n1)
+    sample_raffle_game.add_user_buy_ticket_turn('Joe1', n2)
+    sample_raffle_game.add_user_buy_ticket_turn('Joe2', n3)
+
+    result = initial_pot_value = RAFFLE_GAME_INITIAL_POT + (n1 + n2 + n3) * TICKET_PRICE
+
+    _, remaining_pot_value, rewards = sample_raffle_game.calculate_raffle()
+
+    group_ratios = [0, 0, 0.1, 0.15, 0.25, 0.5]
+    for group in range(2, 6):
+        if rewards[group]:
+            result -= initial_pot_value * group_ratios[group]
+
+    sample_raffle_game.clear_states()
+    assert remaining_pot_value == sample_raffle_game.get_raffle_value()

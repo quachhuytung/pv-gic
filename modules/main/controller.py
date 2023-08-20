@@ -27,7 +27,7 @@ class MainScreenController:
 
         if user_inp == self.__class__.OPTIONS['NEW_DRAW']:
             self.__raffle_game.begin_raffle_game()
-            self.__raffle_game.clear_user_states()
+            self.__raffle_game.clear_states()
             print(self.__screen.render_text())
             self.run()
         elif user_inp == self.__class__.OPTIONS['BUY_TICKET']:
