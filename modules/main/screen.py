@@ -28,7 +28,7 @@ class MainScreen:
         # Status running
         else:
             screen_txt += self.__class__.STATUS_TEXT_ONGOING \
-                .format(raffle_pot_value=self.raffle_game.raffle_pot_value)
+                .format(raffle_pot_value=self.raffle_game.get_raffle_value())
         
         screen_txt += self.__class__.OPTIONS_TEXT
         return screen_txt

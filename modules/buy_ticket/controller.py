@@ -22,11 +22,9 @@ class BuyTicketController:
             username = inp_result['username']
             n_tickets = inp_result['n_tickets']
             
-            if not self.__raffle_game.did_user_played(username):
-                purchased_tickets = self.__raffle_game.add_user_buy_ticket_turn(username, n_tickets)
-
+            is_success, purchased_tickets = self.__raffle_game.add_user_buy_ticket_turn(username, n_tickets)
+            if is_success:
                 self.__screen.display_purchased_tickets(username, purchased_tickets)
-
                 self.__main_screen_controller.run(is_rerun=True)
             else:
                 self.run()

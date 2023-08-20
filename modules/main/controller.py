@@ -40,8 +40,10 @@ class MainScreenController:
                 self.run()
             else:
                 RunRaffleController(self.__raffle_game, self).run()
-        else:
+        elif user_inp == self.__class__.OPTIONS['EXIT']:
             exit(0)
+        else:
+            self.run()
 
     def __get_user_input(self) -> str:
         user_inp = input()
