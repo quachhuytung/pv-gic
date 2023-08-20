@@ -1,8 +1,8 @@
 from constants import RAFFLE_STATUS_RUNNING
 from models.raffle_game import RaffleGame
 from modules.run_raffle.controller import RunRaffleController
-from .screen import MainScreen
 from modules.buy_ticket.controller import BuyTicketController
+from .screen import MainScreen
 
 class MainScreenController:
     OPTIONS = {
@@ -31,9 +31,15 @@ class MainScreenController:
             print(self.__screen.render_text())
             self.run()
         elif user_inp == self.__class__.OPTIONS['BUY_TICKET']:
-            BuyTicketController(self.__raffle_game, self).run()
+            if self.__raffle_game.get_status() != RAFFLE_STATUS_RUNNING:
+                self.run()
+            else:
+                BuyTicketController(self.__raffle_game, self).run()
         elif user_inp == self.__class__.OPTIONS['RUN']:
-            RunRaffleController(self.__raffle_game, self).run()
+            if self.__raffle_game.get_status() != RAFFLE_STATUS_RUNNING:
+                self.run()
+            else:
+                RunRaffleController(self.__raffle_game, self).run()
         else:
             exit(0)
 
