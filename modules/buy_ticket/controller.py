@@ -1,3 +1,5 @@
+import re
+
 from constants import MAX_TICKETS_PER_USER
 from helpers import clear_screen
 from models.raffle_game import RaffleGame
@@ -33,16 +35,26 @@ class BuyTicketController:
             self.run()
 
     def __validate_user_input(self, inp) -> (bool, dict):
+        inp_list = inp.split(',')
+
+        if len(inp_list) != 2:
+            return False, {}
+        
         try:
             name, n_tickets_inp = inp.split(',')
             n_tickets = int(n_tickets_inp)
 
+            ## Validate number of tickets
             if not (1 <= n_tickets <= MAX_TICKETS_PER_USER):
+                return False, {}
+            
+            # Validate name
+            pattern = re.compile(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
+            if not pattern.match(name):
                 return False, {}
         except:
             return False, {}
         
-        ## TODO: VALIDATE NAME
         return True, {
             'username': name,
             'n_tickets': n_tickets

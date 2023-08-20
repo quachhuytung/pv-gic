@@ -6,6 +6,7 @@ from modules.buy_ticket.controller import BuyTicketController
 
 class MainScreenController:
     OPTIONS = {
+        'EXIT': '0',
         'NEW_DRAW': '1',
         'BUY_TICKET': '2',
         'RUN': '3'
@@ -30,8 +31,10 @@ class MainScreenController:
             self.run()
         elif user_inp == self.__class__.OPTIONS['BUY_TICKET']:
             BuyTicketController(self.__raffle_game, self).run()
-        else:
+        elif user_inp == self.__class__.OPTIONS['RUN']:
             RunRaffleController(self.__raffle_game, self).run()
+        else:
+            exit(0)
 
     def __get_user_input(self) -> str:
         user_inp = input()
