@@ -32,3 +32,8 @@ class MainScreen:
         
         screen_txt += self.__class__.OPTIONS_TEXT
         return screen_txt
+    
+    def render_new_game_prompt_txt(self):
+        return f"""
+        New Raffle draw has been started. Initial pot size: ${self.raffle_game.get_raffle_value()}. \nPress any key to return to main menu
+        """.lstrip()

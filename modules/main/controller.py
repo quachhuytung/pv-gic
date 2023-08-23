@@ -2,6 +2,8 @@ from constants import RAFFLE_STATUS_RUNNING
 from models.raffle_game import RaffleGame
 from modules.run_raffle.controller import RunRaffleController
 from modules.buy_ticket.controller import BuyTicketController
+from helpers import clear_screen
+from constants import RAFFLE_STATUS_NOT_RUNNING
 from .screen import MainScreen
 
 class MainScreenController:
@@ -17,31 +19,36 @@ class MainScreenController:
         self.__screen = MainScreen(self.__raffle_game)
 
     def run(self, is_rerun=False):
-        if is_rerun:
-            input('\nPress any key to return to main menu')
-
         print(self.__screen.render_text())
 
         user_inp = self.__get_user_input()
 
         if user_inp == self.__class__.OPTIONS['NEW_DRAW']:
-            self.__raffle_game.begin_raffle_game(is_rerun)
-            print(self.__screen.render_text())
-            self.run()
+            if self.__raffle_game.get_status() == RAFFLE_STATUS_NOT_RUNNING:
+                self.__raffle_game.begin_raffle_game(is_rerun)
+                clear_screen()
+                print(self.__screen.render_new_game_prompt_txt())
+                
+                input()
+                clear_screen()
+
+                print(self.__screen.render_text())
+            
+            self.run(is_rerun)
         elif user_inp == self.__class__.OPTIONS['BUY_TICKET']:
             if self.__raffle_game.get_status() != RAFFLE_STATUS_RUNNING:
-                self.run()
+                self.run(is_rerun)
             else:
                 BuyTicketController(self.__raffle_game, self).run()
         elif user_inp == self.__class__.OPTIONS['RUN']:
             if self.__raffle_game.get_status() != RAFFLE_STATUS_RUNNING:
-                self.run()
+                self.run(is_rerun)
             else:
                 RunRaffleController(self.__raffle_game, self).run()
         elif user_inp == self.__class__.OPTIONS['EXIT']:
             exit(0)
         else:
-            self.run()
+            self.run(is_rerun)
 
     def __get_user_input(self) -> str:
         user_inp = input()
