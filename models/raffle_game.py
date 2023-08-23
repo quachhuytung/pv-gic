@@ -32,9 +32,10 @@ class RaffleGame:
     def get_raffle_value(self):
         return self.__raffle_pot_value
     
-    def begin_raffle_game(self):
+    def begin_raffle_game(self, is_rerun=False):
         self.__raffle_game_status = RAFFLE_STATUS_RUNNING
-        self.__raffle_pot_value = RAFFLE_GAME_INITIAL_POT
+        if not is_rerun:
+            self.__raffle_pot_value = RAFFLE_GAME_INITIAL_POT
     
     def add_user_buy_ticket_turn(self, username: str, n_tickets: int) -> (bool, list):
         """
@@ -52,6 +53,7 @@ class RaffleGame:
         return True, current_user_tickets
     
     def clear_states(self):
+        self.__raffle_game_status = RAFFLE_STATUS_NOT_RUNNING
         self.__user_states = defaultdict(lambda: [])
         self.__wining_ticket = None
     

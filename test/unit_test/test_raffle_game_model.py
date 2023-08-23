@@ -17,23 +17,23 @@ def test_raffle_game_should_have_100_dollar_when_start(sample_raffle_game: Raffl
     -2,
     -1000
 ])
-def test_raffle_game_should_not_allow_user_purchase_n_tickets_less_than_one_test(
+def test_raffle_game_should_not_allow_user_purchase_n_tickets_less_than_one(
         sample_raffle_game: RaffleGame,
         n_ticket_less_than_1
     ):
     is_success, _ = sample_raffle_game.add_user_buy_ticket_turn('Joe', n_ticket_less_than_1)
     assert not is_success
 
-@pytest.mark.parametrize("n_ticket_less_more_than_5", [
+@pytest.mark.parametrize("n_ticket_more_than_5", [
     6,
     10,
     100000
 ])
-def test_raffle_game_should_not_allow_user_purchase_n_tickets_less_than_one_test(
+def test_raffle_game_should_not_allow_user_purchase_n_tickets_more_than_five(
         sample_raffle_game: RaffleGame,
-        n_ticket_less_more_than_5
+        n_ticket_more_than_5
     ):
-    is_success, _ = sample_raffle_game.add_user_buy_ticket_turn('Joe', n_ticket_less_more_than_5)
+    is_success, _ = sample_raffle_game.add_user_buy_ticket_turn('Joe', n_ticket_more_than_5)
     assert not is_success
 
 

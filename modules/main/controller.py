@@ -19,15 +19,13 @@ class MainScreenController:
     def run(self, is_rerun=False):
         if is_rerun:
             input('\nPress any key to return to main menu')
-            self.__raffle_game.set_status(RAFFLE_STATUS_RUNNING)
 
         print(self.__screen.render_text())
 
         user_inp = self.__get_user_input()
 
         if user_inp == self.__class__.OPTIONS['NEW_DRAW']:
-            self.__raffle_game.begin_raffle_game()
-            self.__raffle_game.clear_states()
+            self.__raffle_game.begin_raffle_game(is_rerun)
             print(self.__screen.render_text())
             self.run()
         elif user_inp == self.__class__.OPTIONS['BUY_TICKET']:
